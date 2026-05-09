@@ -18,10 +18,41 @@ const urgencyLevels = ['Estándar 3-5 días', 'Prioritario 24-48h', 'Urgente mis
 
 function RequestService() {
   const [photoNames, setPhotoNames] = useState([])
+  const [status, setStatus] = useState({ type: '', message: '' })
 
   const handlePhotoChange = (event) => {
     const files = Array.from(event.target.files || []).slice(0, 4)
     setPhotoNames(files.map((file) => file.name))
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setStatus({ type: 'loading', message: 'Enviando solicitud...' })
+
+    const formData = new FormData(event.currentTarget)
+    const payload = Object.fromEntries(formData.entries())
+    delete payload.photos
+
+    try {
+      const response = await fetch('/api/request-service', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setStatus({ type: 'error', message: result.message || 'No se pudo enviar la solicitud.' })
+        return
+      }
+
+      event.currentTarget.reset()
+      setPhotoNames([])
+      setStatus({ type: 'success', message: result.message || 'Solicitud enviada correctamente.' })
+    } catch {
+      setStatus({ type: 'error', message: 'No se pudo conectar con el servidor.' })
+    }
   }
 
   return (
@@ -39,7 +70,7 @@ function RequestService() {
       </section>
 
       <section className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <form className="mx-auto max-w-6xl overflow-hidden border border-slate-200 bg-white shadow-2xl shadow-slate-950/10">
+        <form className="mx-auto max-w-6xl overflow-hidden border border-slate-200 bg-white shadow-2xl shadow-slate-950/10" onSubmit={handleSubmit}>
           <div className="bg-slate-950 px-6 py-6 text-white sm:px-8">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-black uppercase tracking-[0.22em] text-amber-300">Solicitud de servicio</p>
@@ -49,22 +80,22 @@ function RequestService() {
 
           <div className="space-y-10 p-6 sm:p-8 lg:p-10">
             <FormSection title="Información de contacto">
-              <Field label="Empresa / Comunidad *" name="company" placeholder="Nombre de empresa o comunidad" />
-              <Field label="Nombre de contacto *" name="contactName" placeholder="Persona de contacto" />
-              <Field label="Teléfono *" name="phone" type="tel" placeholder="+34 600 000 000" />
-              <Field label="Email *" name="email" type="email" placeholder="contacto@empresa.com" />
+              <Field label="Empresa / Comunidad *" name="empresa" placeholder="Nombre de empresa o comunidad" />
+              <Field label="Nombre de contacto *" name="nombre" placeholder="Persona de contacto" required />
+              <Field label="Teléfono *" name="telefono" type="tel" placeholder="+34 600 000 000" />
+              <Field label="Email *" name="email" type="email" placeholder="contacto@empresa.com" required />
             </FormSection>
 
             <FormSection title="Detalles de la propiedad">
-              <Field label="Dirección del inmueble *" name="address" placeholder="Calle, número, planta o local" />
-              <Field label="Ciudad *" name="city" placeholder="Madrid" />
-              <Field label="Código postal" name="postalCode" placeholder="28000" />
-              <SelectField label="Tipo de propiedad" name="propertyType" options={propertyTypes} placeholder="Selecciona una opción" />
+              <Field label="Dirección del inmueble *" name="direccion" placeholder="Calle, número, planta o local" />
+              <Field label="Ciudad *" name="ciudad" placeholder="Madrid" />
+              <Field label="Código postal" name="codigo_postal" placeholder="28000" />
+              <SelectField label="Tipo de propiedad" name="tipo_propiedad" options={propertyTypes} placeholder="Selecciona una opción" />
             </FormSection>
 
             <FormSection title="Solicitud de servicio">
-              <SelectField label="Tipo de servicio" name="serviceType" options={serviceTypes} placeholder="Selecciona un servicio" />
-              <SelectField label="Nivel de urgencia" name="urgency" options={urgencyLevels} placeholder="Selecciona urgencia" />
+              <SelectField label="Tipo de servicio" name="tipo_servicio" options={serviceTypes} placeholder="Selecciona un servicio" />
+              <SelectField label="Nivel de urgencia" name="urgencia" options={urgencyLevels} placeholder="Selecciona urgencia" />
             </FormSection>
 
             <div>
@@ -73,11 +104,14 @@ function RequestService() {
                 <span className="text-sm font-black text-slate-800">Detalles del trabajo</span>
                 <textarea
                   className="mt-2 min-h-40 w-full border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
-                  name="description"
+                  name="mensaje"
+                  required
                   placeholder="Describe el trabajo necesario, ubicación dentro del inmueble y cualquier detalle relevante..."
                 />
               </label>
             </div>
+
+            <input className="hidden" type="text" name="website" tabIndex="-1" autoComplete="off" />
 
             <div>
               <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Fotos</p>
@@ -117,6 +151,12 @@ function RequestService() {
               </div>
             </div>
 
+            {status.message && (
+              <p className={`border px-4 py-3 text-sm font-bold ${status.type === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
+                {status.message}
+              </p>
+            )}
+
             <button type="submit" className="w-full rounded-md bg-amber-400 px-6 py-4 text-base font-black text-slate-950 shadow-lg shadow-amber-400/20 transition hover:-translate-y-0.5 hover:bg-amber-300">
               ENVIAR SOLICITUD
             </button>
@@ -136,7 +176,7 @@ function FormSection({ title, children }) {
   )
 }
 
-function Field({ label, name, type = 'text', placeholder }) {
+function Field({ label, name, type = 'text', placeholder, required = false }) {
   return (
     <label className="block">
       <span className="text-sm font-black text-slate-800">{label}</span>
@@ -145,6 +185,7 @@ function Field({ label, name, type = 'text', placeholder }) {
         type={type}
         name={name}
         placeholder={placeholder}
+        required={required}
       />
     </label>
   )

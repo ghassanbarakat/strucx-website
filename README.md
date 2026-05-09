@@ -5,7 +5,7 @@ Sitio web premium para una empresa de construcción, reformas, instalaciones y m
 ## Estructura del proyecto
 
 ```text
-strux-website/
+strucx/
 ├── index.html
 ├── package.json
 ├── tailwind.config.js
