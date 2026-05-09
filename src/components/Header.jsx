@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Menu } from 'lucide-react'
+import logo from '../assets/logo.jpg'
 
 const navLinks = [
   { label: 'Inicio', to: '/' },
@@ -19,10 +20,17 @@ function Header() {
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-8 px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="StrucX inicio">
-          <span className="grid size-11 place-items-center rounded-md bg-slate-950 text-lg font-black text-amber-400 shadow-sm">
-            SX
-          </span>
-          <span className="text-2xl font-black uppercase tracking-tight text-slate-950">StrucX</span>
+          <div
+            className="h-11 w-11 shrink-0 rounded-md"
+            style={{
+              backgroundImage: `url(${logo})`,
+              backgroundSize: '270%',
+              backgroundPosition: 'center 5%',
+              backgroundRepeat: 'no-repeat',
+              backgroundColor: '#000',
+            }}
+          />
+          <span className="text-2xl font-black uppercase tracking-tight text-slate-950">STRUCX</span>
         </Link>
 
         <nav className="ml-auto hidden items-center gap-7 xl:flex" aria-label="Navegación principal">
