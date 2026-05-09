@@ -19,8 +19,13 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-8 px-4 py-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex shrink-0 items-center" aria-label="StrucX inicio">
-          <img src={wordmark} alt="STRUCX" className="h-7 w-auto max-w-[185px] object-contain sm:h-8 sm:max-w-[210px]" />
+        <Link to="/" className="flex shrink-0 select-none items-center" aria-label="StrucX inicio">
+          <img
+            src={wordmark}
+            alt="STRUCX"
+            draggable="false"
+            className="h-7 w-auto max-w-[185px] select-none object-contain sm:h-8 sm:max-w-[210px]"
+          />
         </Link>
 
         <nav className="ml-auto hidden items-center gap-7 xl:flex" aria-label="Navegación principal">
