@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Menu } from 'lucide-react'
-import wordmark from '../assets/wordmark.png'
+import wordmark from '../assets/strucx-wordmark.png'
 
 const navLinks = [
   { label: 'Inicio', to: '/' },
