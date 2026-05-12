@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import wordmark from '../assets/strucx-wordmark-footer.png'
 
 const navLinks = [
   { label: 'Inicio', to: '/' },
@@ -16,9 +17,13 @@ function Footer() {
     <footer className="bg-slate-950 text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-3 lg:px-8">
         <div>
-          <Link to="/" className="flex items-center gap-3" aria-label="StrucX inicio">
-            <span className="grid size-11 place-items-center rounded-md bg-amber-400 text-lg font-black text-slate-950">SX</span>
-            <span className="text-2xl font-black uppercase tracking-tight">StrucX</span>
+          <Link to="/" className="inline-flex select-none items-center" aria-label="StrucX inicio">
+            <img
+              src={wordmark}
+              alt="STRUCX"
+              draggable="false"
+              className="h-8 w-auto max-w-[210px] select-none object-contain"
+            />
           </Link>
           <p className="mt-5 max-w-sm leading-7 text-slate-300">
             Obras y mantenimiento en Madrid, sin improvisación.
